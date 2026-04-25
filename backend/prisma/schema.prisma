@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SubmissionStatus {
+  pending
+  accepted
+  wrong_answer
+  runtime_error
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+enum PaymentMethod {
+  credit_card
+  debit_card
+  upi
+  cash
+}
+
+enum PlanType {
+  free
+  pro
+}
+
+model User {
+  id Int  
+}
