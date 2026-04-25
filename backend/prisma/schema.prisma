@@ -34,5 +34,74 @@ enum PlanType {
 }
 
 model User {
-  id Int  
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  submission Submission[]
+  progress Progress []
+  payment Payment?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  }
+
+model Course {
+  id Int @id @default(autoincrement())
+  title String
+  problem Problem[]
+  progress Progress[]
+  createdAt DateTime @default(now())
+}
+
+model Problem {
+  id Int @id @default(autoincrement())
+  courseId Int
+  description String 
+  course Course @relation(fields: [courseId],references: [id],onDelete: Cascade)
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  @@index([courseId])
+}
+
+model Submission {
+  id Int @id @default(autoincrement())
+  userId Int
+  problemId Int
+  status SubmissionStatus @default(pending)
+  submittedAt DateTime @default(now())
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  problem Problem @relation(fields: [problemId],references:[id],onDelete: Cascade)
+
+@@index([userId])
+  @@index([problemId])
+  @@index([userId, problemId])
+
+}
+
+model Progress {
+  userId               Int
+  courseId             Int
+  completionPercentage Decimal  @default(0) @db.Decimal(5, 2)
+  completedAt          DateTime?
+  user                 User     @relation(fields: [userId],   references: [id], onDelete: Cascade)
+  course               Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  updatedAt            DateTime @updatedAt
+
+  @@id([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  }
+
+
+model payment {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  plan PlanType @default(free)
+  method PaymentMethod
+  status PaymentStatus
+  paidAt DateTime?
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  @@index([userId])
 }
