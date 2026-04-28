@@ -93,7 +93,7 @@ model Progress {
   }
 
 
-model payment {
+model Payment {
   id Int @id @default(autoincrement())
   userId Int @unique
   plan PlanType @default(free)
