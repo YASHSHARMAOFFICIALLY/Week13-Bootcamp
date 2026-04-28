@@ -32,6 +32,11 @@ enum PlanType {
   free
   pro
 }
+enum Role {
+  student
+  Teacher
+  admin
+}
 
 model User {
   id Int @id @default(autoincrement())
@@ -39,14 +44,17 @@ model User {
   email String @unique
   submission Submission[]
   progress Progress []
-  payment Payment?
+  payment Payment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  subscription Subscription?
   }
 
 model Course {
   id Int @id @default(autoincrement())
   title String
+  description String?
+  thumbnail   String?
   problem Problem[]
   progress Progress[]
   createdAt DateTime @default(now())
@@ -55,6 +63,7 @@ model Course {
 model Problem {
   id Int @id @default(autoincrement())
   courseId Int
+  title String
   description String 
   course Course @relation(fields: [courseId],references: [id],onDelete: Cascade)
   submissions Submission[]
@@ -95,13 +104,29 @@ model Progress {
 
 model Payment {
   id Int @id @default(autoincrement())
-  userId Int @unique
-  plan PlanType @default(free)
+  userId Int 
+  subscription   Subscription? 
   method PaymentMethod
-  status PaymentStatus
+  status PaymentStatus @default(pending)
+  amount Decimal @db.Decimal(10,2)
   paidAt DateTime?
+  transactionId String? @unique
+  failureReason String?
+  attemptCount Int @default(1)
+  
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   @@index([userId])
+}
+
+model Subscription {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  paymentId  Int   @unique
+  plan      PlanType @default(free)
+  expiresAt DateTime?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payment Payment @relation(fields: [paymentId], references: [id])
+  updatedAt DateTime @updatedAt
 }
