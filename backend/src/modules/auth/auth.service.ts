@@ -5,13 +5,13 @@ import { signToken } from "../../lib/jwt.js";
 
 const SALT_ROUNDS = 12;
 
-type SignupInput = {
-  name: string;
-  email: string;
-  password: string;
-  username: string;
-};
 
+type SignupInput ={
+  email:string;
+  name:string;
+  username:string;
+  password:string;
+}
 type LoginInput = {
   username: string;
   password: string;
@@ -64,6 +64,8 @@ export const signup = async ({ name, email, password, username }: SignupInput) =
     throw error;
   }
 };
+
+
 
 export const login = async ({ username, password }: LoginInput) => {
   const user = await prisma.user.findUnique({
