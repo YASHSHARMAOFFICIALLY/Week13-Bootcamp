@@ -6,6 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prisma:generate": "prisma generate",
+    "seed": "prisma db seed",
     "predev": "prisma generate",
     "dev": "tsx watch src/index.ts",
     "prebuild": "prisma generate",
